@@ -1,6 +1,9 @@
 server:
   port: 9001
 
+entity:
+  env: sg
+
 spring:
   application:
     name: im-service

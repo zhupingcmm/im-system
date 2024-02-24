@@ -24,7 +24,7 @@ public class ResponseVO<T> {
         return new ResponseVO(200, "success", data);
     }
 
-    public static ResponseVO successResponse() {
+    public static  ResponseVO successResponse() {
         return new ResponseVO(200, "success");
     }
 

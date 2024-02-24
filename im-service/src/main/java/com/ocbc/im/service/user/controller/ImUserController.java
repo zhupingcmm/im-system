@@ -1,6 +1,7 @@
 package com.ocbc.im.service.user.controller;
 
 import com.ocbc.im.common.ResponseVO;
+import com.ocbc.im.service.user.model.req.DeleteUserReq;
 import com.ocbc.im.service.user.model.req.GetUserInfoReq;
 import com.ocbc.im.service.user.model.req.GetUserInfoResp;
 import com.ocbc.im.service.user.model.req.ImportUserReq;

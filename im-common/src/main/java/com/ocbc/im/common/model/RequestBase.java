@@ -11,7 +11,7 @@ import lombok.Data;
 public class RequestBase {
     private String appId;
 
-    private String operater;
+    private String operator;
 
     private Integer clientType;
 

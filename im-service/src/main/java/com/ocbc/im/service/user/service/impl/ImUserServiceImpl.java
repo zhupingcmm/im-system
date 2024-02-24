@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ocbc.im.common.ResponseVO;
 import com.ocbc.im.common.enums.DelFlagEnum;
 import com.ocbc.im.common.enums.UserErrorCode;
+import com.ocbc.im.common.exception.ApplicationException;
 import com.ocbc.im.common.utils.DateUtil;
 import com.ocbc.im.service.user.dao.ImUserDataEntity;
 import com.ocbc.im.service.user.dao.mapper.ImUserDataMapper;
@@ -88,7 +89,7 @@ public class ImUserServiceImpl implements ImUserService {
     }
 
     @Override
-    public ResponseVO<ImUserDataEntity> getSingleUserInfo(String userId, Integer appId) {
+    public ResponseVO<ImUserDataEntity> getSingleUserInfo(String userId, String appId) {
         QueryWrapper<ImUserDataEntity> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("app_id", appId);
         queryWrapper.eq("user_id", userId);
@@ -138,7 +139,22 @@ public class ImUserServiceImpl implements ImUserService {
 
     @Override
     public ResponseVO modifyUserInfo(ModifyUserInfoReq req) {
-        return null;
+        QueryWrapper<ImUserDataEntity> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("app_id", req.getAppId());
+        queryWrapper.eq("user_id", req.getAppId());
+        queryWrapper.eq("is_active", DelFlagEnum.NORMAL.getCode());
+
+        ImUserDataEntity imUserDataEntity = imUserDataMapper.selectOne(queryWrapper);
+
+        if (ObjectUtils.isEmpty(imUserDataEntity)) throw new ApplicationException(UserErrorCode.USER_IS_NOT_EXIST);
+
+        ImUserDataEntity userDataEntity = new ImUserDataEntity();
+        BeanUtil.copyProperties(req, userDataEntity);
+        userDataEntity.setAppId(null);
+        userDataEntity.setUserId(null);
+        imUserDataMapper.update(userDataEntity, queryWrapper);
+
+        return ResponseVO.successResponse();
     }
 
     @Override

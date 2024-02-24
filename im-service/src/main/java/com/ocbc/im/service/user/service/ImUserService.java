@@ -10,7 +10,7 @@ public interface ImUserService {
 
     ResponseVO<GetUserInfoResp> getUserInfo(GetUserInfoReq req);
 
-    ResponseVO<ImUserDataEntity> getSingleUserInfo(String userId , Integer appId);
+    ResponseVO<ImUserDataEntity> getSingleUserInfo(String userId , String appId);
 
     ResponseVO deleteUser(DeleteUserReq req);
 
