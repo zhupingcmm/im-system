@@ -6,9 +6,7 @@ import com.ocbc.im.service.friendship.model.req.DeleteFriendReq;
 import com.ocbc.im.service.friendship.model.req.ImportFriendShipReq;
 import com.ocbc.im.service.friendship.model.req.UpdateFriendReq;
 import com.ocbc.im.service.friendship.service.ImFriendService;
-import com.ocbc.im.service.user.model.req.CheckFriendShipReq;
-import com.ocbc.im.service.user.model.req.GetAllFriendShipReq;
-import com.ocbc.im.service.user.model.req.GetRelationReq;
+import com.ocbc.im.service.user.model.req.*;
 import lombok.AllArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -64,10 +62,18 @@ public class ImFriendShipController {
     }
 
 
-    @GetMapping("/checkFriend/{appid}")
-    public ResponseVO checkFriend(@RequestBody @Validated CheckFriendShipReq req, @PathVariable(value = "appid")String appId){
+    @PostMapping("/addBlack/{appid}")
+    public ResponseVO addBlack(@RequestBody @Validated AddFriendShipBlackReq req, @PathVariable(value = "appid")String appId){
         req.setAppId(appId);
-        return imFriendService.checkFriendShip(req);
+        return imFriendService.addBlack(req);
     }
+
+
+    @DeleteMapping("/deleteBlack/{appid}")
+    public ResponseVO checkFriend(@RequestBody @Validated DeleteBlackReq req, @PathVariable(value = "appid")String appId){
+        req.setAppId(appId);
+        return imFriendService.deleteBlack(req);
+    }
+
 
 }

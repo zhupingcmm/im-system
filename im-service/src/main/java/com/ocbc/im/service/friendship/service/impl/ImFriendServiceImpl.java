@@ -8,6 +8,7 @@ import com.ocbc.im.common.enums.AllowFriendTypeEnum;
 import com.ocbc.im.common.enums.CheckFriendShipTypeEnum;
 import com.ocbc.im.common.enums.FriendShipErrorCode;
 import com.ocbc.im.common.enums.FriendShipStatusEnum;
+import com.ocbc.im.common.exception.ApplicationException;
 import com.ocbc.im.common.model.RequestBase;
 import com.ocbc.im.service.friendship.dao.ImFriendShipEntity;
 import com.ocbc.im.service.friendship.dao.mapper.ImFriendShipMapper;
@@ -15,9 +16,7 @@ import com.ocbc.im.service.friendship.model.req.*;
 import com.ocbc.im.service.friendship.model.res.ImportFriendShipResp;
 import com.ocbc.im.service.friendship.service.ImFriendService;
 import com.ocbc.im.service.user.dao.ImUserDataEntity;
-import com.ocbc.im.service.user.model.req.CheckFriendShipReq;
-import com.ocbc.im.service.user.model.req.GetAllFriendShipReq;
-import com.ocbc.im.service.user.model.req.GetRelationReq;
+import com.ocbc.im.service.user.model.req.*;
 import com.ocbc.im.service.user.model.resp.CheckFriendShipResp;
 import com.ocbc.im.service.user.service.ImUserService;
 import lombok.AllArgsConstructor;
@@ -298,6 +297,81 @@ public class ImFriendServiceImpl implements ImFriendService {
         }
 
         return ResponseVO.successResponse(reqs);
+    }
+
+    @Override
+    public ResponseVO addBlack(AddFriendShipBlackReq req) {
+
+        ResponseVO<ImUserDataEntity> fromInfo = imUserService.getSingleUserInfo(req.getFromId(), req.getAppId());
+
+        if (!fromInfo.isOk()) return fromInfo;
+
+        ResponseVO<ImUserDataEntity> toInfo = imUserService.getSingleUserInfo(req.getToId(), req.getAppId());
+
+        if (!toInfo.isOk()) return toInfo;
+
+        QueryWrapper<ImFriendShipEntity> query = new QueryWrapper<>();
+
+        query.eq("app_id", req.getAppId());
+        query.eq("from_id", req.getFromId());
+        query.eq("to_id", req.getToId());
+
+
+        ImFriendShipEntity fromItem = imFriendShipMapper.selectOne(query);
+
+        if (ObjectUtils.isEmpty(fromItem)) {
+            // 没有查询到结果，新增 add
+            fromItem = new ImFriendShipEntity();
+            fromItem.setFromId(req.getFromId());
+            fromItem.setToId(req.getToId());
+            fromItem.setAppId(req.getAppId());
+            fromItem.setBlack(FriendShipStatusEnum.BLACK_STATUS_BLACKED.getCode());
+            fromItem.setCreateTime(LocalDateTime.now());
+            int result = imFriendShipMapper.insert(fromItem);
+
+            if (result != 1) return ResponseVO.errorResponse();
+
+        } else {
+            // 查到了
+            if (fromItem.getBlack() != null && fromItem.getBlack() == FriendShipStatusEnum.BLACK_STATUS_BLACKED.getCode()) {
+                //已经是黑名单状态直接返回
+                return ResponseVO.errorResponse(FriendShipErrorCode.FRIEND_IS_BLACK);
+            } else {
+                // 不是黑名单状态，直接更新为黑名单
+
+                ImFriendShipEntity update = new ImFriendShipEntity();
+                update.setBlack(FriendShipStatusEnum.BLACK_STATUS_BLACKED.getCode());
+                int result = imFriendShipMapper.update(update, query);
+                if(result != 1){
+                    return ResponseVO.errorResponse(FriendShipErrorCode.ADD_BLACK_ERROR);
+                }
+            }
+
+        }
+
+        return ResponseVO.successResponse();
+    }
+
+    @Override
+    public ResponseVO deleteBlack(DeleteBlackReq req) {
+
+        QueryWrapper<ImFriendShipEntity> query = new QueryWrapper<>();
+        query.eq("from_id", req.getFromId());
+        query.eq("app_id", req.getAppId());
+        query.eq("to_id", req.getToId());
+
+        ImFriendShipEntity fromItem = imFriendShipMapper.selectOne(query);
+
+        if (ObjectUtils.isNotEmpty(fromItem) && fromItem.getBlack() == FriendShipStatusEnum.BLACK_STATUS_NORMAL.getCode()) {
+            throw new ApplicationException(FriendShipErrorCode.REPEATSHIP_IS_NOT_EXIST);
+        }
+
+        ImFriendShipEntity update = new ImFriendShipEntity();
+        update.setBlack(FriendShipStatusEnum.FRIEND_STATUS_NO_FRIEND.getCode());
+        int result = imFriendShipMapper.update(update, query);
+
+        if (result != 1) return ResponseVO.errorResponse();
+        return ResponseVO.successResponse();
     }
 
 
