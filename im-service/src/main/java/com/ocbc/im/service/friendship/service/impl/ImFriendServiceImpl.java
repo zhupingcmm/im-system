@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.ocbc.im.common.ResponseVO;
 import com.ocbc.im.common.enums.AllowFriendTypeEnum;
+import com.ocbc.im.common.enums.CheckFriendShipTypeEnum;
 import com.ocbc.im.common.enums.FriendShipErrorCode;
 import com.ocbc.im.common.enums.FriendShipStatusEnum;
 import com.ocbc.im.common.model.RequestBase;
@@ -14,8 +15,10 @@ import com.ocbc.im.service.friendship.model.req.*;
 import com.ocbc.im.service.friendship.model.res.ImportFriendShipResp;
 import com.ocbc.im.service.friendship.service.ImFriendService;
 import com.ocbc.im.service.user.dao.ImUserDataEntity;
+import com.ocbc.im.service.user.model.req.CheckFriendShipReq;
 import com.ocbc.im.service.user.model.req.GetAllFriendShipReq;
 import com.ocbc.im.service.user.model.req.GetRelationReq;
+import com.ocbc.im.service.user.model.resp.CheckFriendShipResp;
 import com.ocbc.im.service.user.service.ImUserService;
 import lombok.AllArgsConstructor;
 
@@ -26,6 +29,9 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -259,6 +265,39 @@ public class ImFriendServiceImpl implements ImFriendService {
         }
 
         return ResponseVO.successResponse(result);
+    }
+
+    @Override
+    public ResponseVO checkFriendShip(CheckFriendShipReq req) {
+
+        Map<String, Integer> result = req.getToIds()
+                .stream()
+                .collect(Collectors.toMap(Function.identity(), s -> 0));
+
+        List<CheckFriendShipResp> reqs;
+
+        if (req.getCheckType() == CheckFriendShipTypeEnum.SINGLE.getType()) {
+            reqs = imFriendShipMapper.checkFriendShip(req);
+        } else {
+
+            reqs = imFriendShipMapper.checkFriendShipBoth(req);
+        }
+
+        Map<String, Integer> resultFromDB = reqs.stream()
+                .collect(Collectors.toMap(CheckFriendShipResp::getToId,
+                        CheckFriendShipResp::getStatus));
+
+        for (String toId : result.keySet()) {
+            if (!resultFromDB.containsKey(toId)) {
+                CheckFriendShipResp checkFriendShipResp = new CheckFriendShipResp();
+                checkFriendShipResp.setFromId(req.getFromId());
+                checkFriendShipResp.setToId(toId);
+                checkFriendShipResp.setStatus(result.get(toId));
+                reqs.add(checkFriendShipResp);
+            }
+        }
+
+        return ResponseVO.successResponse(reqs);
     }
 
 

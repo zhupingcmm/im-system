@@ -6,6 +6,7 @@ import com.ocbc.im.service.friendship.model.req.DeleteFriendReq;
 import com.ocbc.im.service.friendship.model.req.ImportFriendShipReq;
 import com.ocbc.im.service.friendship.model.req.UpdateFriendReq;
 import com.ocbc.im.service.friendship.service.ImFriendService;
+import com.ocbc.im.service.user.model.req.CheckFriendShipReq;
 import com.ocbc.im.service.user.model.req.GetAllFriendShipReq;
 import com.ocbc.im.service.user.model.req.GetRelationReq;
 import lombok.AllArgsConstructor;
@@ -60,6 +61,13 @@ public class ImFriendShipController {
     public ResponseVO getRelation(@RequestBody @Validated GetRelationReq req, @PathVariable(value = "appid")String appId){
         req.setAppId(appId);
         return imFriendService.getRelation(req);
+    }
+
+
+    @GetMapping("/checkFriend/{appid}")
+    public ResponseVO checkFriend(@RequestBody @Validated CheckFriendShipReq req, @PathVariable(value = "appid")String appId){
+        req.setAppId(appId);
+        return imFriendService.checkFriendShip(req);
     }
 
 }
