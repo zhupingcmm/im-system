@@ -14,9 +14,11 @@ import com.ocbc.im.service.friendship.model.req.*;
 import com.ocbc.im.service.friendship.model.res.ImportFriendShipResp;
 import com.ocbc.im.service.friendship.service.ImFriendService;
 import com.ocbc.im.service.user.dao.ImUserDataEntity;
+import com.ocbc.im.service.user.model.req.GetAllFriendShipReq;
+import com.ocbc.im.service.user.model.req.GetRelationReq;
 import com.ocbc.im.service.user.service.ImUserService;
 import lombok.AllArgsConstructor;
-import lombok.val;
+
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -235,7 +237,29 @@ public class ImFriendServiceImpl implements ImFriendService {
         return ResponseVO.successResponse();
     }
 
+    @Override
+    public ResponseVO getAllFriendShip(GetAllFriendShipReq req) {
+        QueryWrapper<ImFriendShipEntity> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("app_id", req.getAppId());
+        queryWrapper.eq("from_id", req.getFromId());
 
+        return ResponseVO.successResponse(imFriendShipMapper.selectList(queryWrapper));
+    }
+
+    @Override
+    public ResponseVO getRelation(GetRelationReq req) {
+        QueryWrapper<ImFriendShipEntity> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("app_id", req.getAppId());
+        queryWrapper.eq("from_id", req.getFromId());
+        queryWrapper.eq("to_id", req.getToId());
+        List<ImFriendShipEntity> result = imFriendShipMapper.selectList(queryWrapper);
+
+        if (ObjectUtils.isEmpty(result)) {
+            return ResponseVO.errorResponse(FriendShipErrorCode.REPEATSHIP_IS_NOT_EXIST);
+        }
+
+        return ResponseVO.successResponse(result);
+    }
 
 
 }

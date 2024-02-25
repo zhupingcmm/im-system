@@ -6,6 +6,8 @@ import com.ocbc.im.service.friendship.model.req.DeleteFriendReq;
 import com.ocbc.im.service.friendship.model.req.ImportFriendShipReq;
 import com.ocbc.im.service.friendship.model.req.UpdateFriendReq;
 import com.ocbc.im.service.friendship.service.ImFriendService;
+import com.ocbc.im.service.user.model.req.GetAllFriendShipReq;
+import com.ocbc.im.service.user.model.req.GetRelationReq;
 import lombok.AllArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -48,7 +50,16 @@ public class ImFriendShipController {
         return imFriendService.deleteAllFriend(req);
     }
 
+    @GetMapping("/getAllFriendShip/{appid}")
+    public ResponseVO getAllFriendShip(@RequestBody @Validated GetAllFriendShipReq req, @PathVariable(value = "appid")String appId){
+        req.setAppId(appId);
+        return imFriendService.getAllFriendShip(req);
+    }
 
-
+    @GetMapping("/getRelation/{appid}")
+    public ResponseVO getRelation(@RequestBody @Validated GetRelationReq req, @PathVariable(value = "appid")String appId){
+        req.setAppId(appId);
+        return imFriendService.getRelation(req);
+    }
 
 }

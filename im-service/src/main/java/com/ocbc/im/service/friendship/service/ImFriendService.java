@@ -3,6 +3,8 @@ package com.ocbc.im.service.friendship.service;
 import com.ocbc.im.common.ResponseVO;
 import com.ocbc.im.common.model.RequestBase;
 import com.ocbc.im.service.friendship.model.req.*;
+import com.ocbc.im.service.user.model.req.GetAllFriendShipReq;
+import com.ocbc.im.service.user.model.req.GetRelationReq;
 
 public interface ImFriendService {
 
@@ -17,4 +19,10 @@ public interface ImFriendService {
     ResponseVO deleteAllFriend(DeleteFriendReq req);
 
     ResponseVO doAddFriend(RequestBase requestBase, String fromId, FriendDto dto, String appId);
+
+
+    ResponseVO getAllFriendShip(GetAllFriendShipReq req);
+
+    ResponseVO getRelation(GetRelationReq req);
+
 }
