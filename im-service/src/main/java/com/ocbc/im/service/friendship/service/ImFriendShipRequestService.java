@@ -6,11 +6,11 @@ import com.ocbc.im.service.friendship.model.req.FriendDto;
 import com.ocbc.im.service.friendship.model.req.ReadFriendShipRequestReq;
 
 public interface ImFriendShipRequestService {
-    ResponseVO addFriendshipRequest(String fromId, FriendDto dto, Integer appId);
+    ResponseVO addFriendshipRequest(String fromId, FriendDto dto, String appId);
 
      ResponseVO approveFriendRequest(ApproveFriendRequestReq req);
 
      ResponseVO readFriendShipRequestReq(ReadFriendShipRequestReq req);
 
-     ResponseVO getFriendRequest(String fromId, Integer appId);
+     ResponseVO getFriendRequest(String fromId, String appId);
 }
