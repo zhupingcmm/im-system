@@ -20,6 +20,8 @@
     <modules>
         <module>im-common</module>
         <module>im-service</module>
+        <module>im-tcp</module>
+        <module>im-codec</module>
     </modules>
 
 
@@ -62,16 +64,16 @@
         </dependency>
 
         <!-- fastjson -->
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.alibaba</groupId>-->
+<!--            <artifactId>fastjson</artifactId>-->
+<!--        </dependency>-->
 
         <!-- lombok -->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.projectlombok</groupId>-->
+<!--            <artifactId>lombok</artifactId>-->
+<!--        </dependency>-->
 
     </dependencies>
 
@@ -218,6 +220,8 @@
                 <artifactId>feign-jackson</artifactId>
                 <version>${feign.version}</version>
             </dependency>
+
+
 
         </dependencies>
 
