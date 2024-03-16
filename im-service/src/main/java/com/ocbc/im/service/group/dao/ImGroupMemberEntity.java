@@ -1,0 +1,46 @@
+package com.ocbc.im.service.group.dao;
+
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
+
+import java.time.LocalDateTime;
+
+/**
+ * @description:
+ * @author: lld
+ * @version: 1.0
+ */
+@Data
+@TableName("im_group_member")
+public class ImGroupMemberEntity {
+
+    @TableId(value = "id", type = IdType.AUTO)
+    private Long id;
+
+    private String appId;
+
+    private String groupId;
+
+    //成员id
+    private String memberId;
+
+    //群成员类型，0 普通成员, 1 管理员, 2 群主， 3 禁言，4 已经移除的成员
+    private Integer role;
+
+    private Long speakDate;
+
+    //群昵称
+    private String alias;
+
+    //加入时间
+    private LocalDateTime joinTime;
+
+    //离开时间
+    private LocalDateTime leaveTime;
+
+    private String joinType;
+
+    private String extra;
+}
