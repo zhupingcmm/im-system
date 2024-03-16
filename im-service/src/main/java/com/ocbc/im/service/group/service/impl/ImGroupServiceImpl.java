@@ -155,7 +155,6 @@ public class ImGroupServiceImpl implements ImGroupService {
 
         GetGroupResp getGroupResp = new GetGroupResp();
 
-        imGroupMemberService.
 
 
         return null;
