@@ -18,8 +18,8 @@ public class Starter {
 
     private static void start() {
         try {
-//            new LimServer(TcpUtil.getBootstrapConfig().getLim()).start();
-            new LimWebSocketServer(TcpUtil.getBootstrapConfig().getLim()).start();
+            new LimServer(TcpUtil.getBootstrapConfig().getLim()).start();
+//            new LimWebSocketServer(TcpUtil.getBootstrapConfig().getLim()).start();
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);

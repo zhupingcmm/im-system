@@ -1,17 +1,20 @@
 package com.ocbc.im.tcp.server;
 
+import com.ocbc.im.cdec.MessageDecoder;
 import com.ocbc.im.cdec.config.BootstrapConfig;
-import com.sun.security.ntlm.Server;
+import com.ocbc.im.tcp.handler.NettyServerHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
+import io.netty.channel.ChannelPipeline;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+@Slf4j
 public class LimServer {
 
     private final static Logger logger = LoggerFactory.getLogger(LimServer.class);
@@ -35,6 +38,9 @@ public class LimServer {
                     @Override
                     protected void initChannel(SocketChannel ch) throws Exception {
 
+                        ChannelPipeline pipeline = ch.pipeline();
+                        pipeline.addLast(new MessageDecoder());
+                        pipeline.addLast(new NettyServerHandler());
                     }
                 });
 
@@ -43,6 +49,7 @@ public class LimServer {
 
     public void start() {
         this.server.bind(this.config.getTcpPort());
+        log.info("tcp sever start on http://localhost:{}", this.config.getTcpPort());
     }
 
 
