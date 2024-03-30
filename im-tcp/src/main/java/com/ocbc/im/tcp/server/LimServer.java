@@ -1,6 +1,7 @@
 package com.ocbc.im.tcp.server;
 
 import com.ocbc.im.cdec.MessageDecoder;
+import com.ocbc.im.cdec.MessageEncoder;
 import com.ocbc.im.cdec.config.BootstrapConfig;
 import com.ocbc.im.tcp.handler.NettyServerHandler;
 import io.netty.bootstrap.ServerBootstrap;
@@ -40,9 +41,12 @@ public class LimServer {
 
                         ChannelPipeline pipeline = ch.pipeline();
                         pipeline.addLast(new MessageDecoder());
+                        pipeline.addLast(new MessageEncoder());
                         pipeline.addLast(new NettyServerHandler());
                     }
                 });
+
+
 
 
     }
