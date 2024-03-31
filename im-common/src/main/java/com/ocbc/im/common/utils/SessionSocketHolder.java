@@ -1,8 +1,10 @@
 package com.ocbc.im.common.utils;
 
+import com.ocbc.im.common.constant.Constants;
 import com.ocbc.im.common.model.UserClientDto;
 import io.netty.channel.Channel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.util.AttributeKey;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -33,6 +35,19 @@ public class SessionSocketHolder {
         dto.setUserid(userId);
         return CHANNELS.get(dto);
     }
+
+
+    public static void remove (Integer appid, String userid, Integer clientType, String imei) {
+        UserClientDto userClientDto = new UserClientDto();
+        userClientDto.setAppId(appid);
+        userClientDto.setUserid(userid);
+        userClientDto.setClientType(clientType);
+        userClientDto.setImei(imei);
+        CHANNELS.remove(userClientDto);
+    }
+
+
+
 
 
 

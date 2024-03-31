@@ -30,7 +30,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<Message> {
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Message message) throws Exception {
-        System.out.println(message);
+        logger.info("message: {}", message);
 
         Integer command = message.getMessageHeader().getCommand();
 
@@ -93,7 +93,23 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<Message> {
             ctx.channel().writeAndFlush(loginSuccess);
 
         } else if (command == SystemCommand.LOGOUT.getCommand()) {
+            String userid = (String) ctx.channel().attr(AttributeKey.valueOf(Constants.UserId)).get();
+            Integer appid = (Integer) ctx.channel().attr(AttributeKey.valueOf(Constants.AppId)).get();
+            Integer clientType = (Integer) ctx.channel().attr(AttributeKey.valueOf(Constants.ClientType)).get();
+            String imei = (String) ctx.channel().attr(AttributeKey.valueOf(Constants.Imei)).get();
+            // remove from memory
+            SessionSocketHolder.remove(appid, userid, clientType, imei);
 
+            // remove from redis
+
+            // store in redis
+            RedissonClient redissonClient = RedisManager.getRedissonClient();
+
+            RMap<Object, Object> map = redissonClient.getMap(appid + Constants.RedisConstants.UserSessionConstants + userid);
+
+            map.remove(clientType + ":" + imei);
+
+            ctx.channel().close();
         }
 
 
