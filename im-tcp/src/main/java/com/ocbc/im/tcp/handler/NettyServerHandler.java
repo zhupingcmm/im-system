@@ -11,7 +11,7 @@ import com.ocbc.im.common.constant.Constants;
 import com.ocbc.im.common.enums.ImConnectStatusEnum;
 import com.ocbc.im.common.enums.command.SystemCommand;
 import com.ocbc.im.common.model.UserSession;
-import com.ocbc.im.common.utils.SessionSocketHolder;
+import com.ocbc.im.tcp.utils.SessionSocketHolder;
 import com.ocbc.im.tcp.redis.RedisManager;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -93,25 +93,12 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<Message> {
             ctx.channel().writeAndFlush(loginSuccess);
 
         } else if (command == SystemCommand.LOGOUT.getCommand()) {
-            String userid = (String) ctx.channel().attr(AttributeKey.valueOf(Constants.UserId)).get();
-            Integer appid = (Integer) ctx.channel().attr(AttributeKey.valueOf(Constants.AppId)).get();
-            Integer clientType = (Integer) ctx.channel().attr(AttributeKey.valueOf(Constants.ClientType)).get();
-            String imei = (String) ctx.channel().attr(AttributeKey.valueOf(Constants.Imei)).get();
-            // remove from memory
-            SessionSocketHolder.remove(appid, userid, clientType, imei);
-
-            // remove from redis
-
-            // store in redis
-            RedissonClient redissonClient = RedisManager.getRedissonClient();
-
-            RMap<Object, Object> map = redissonClient.getMap(appid + Constants.RedisConstants.UserSessionConstants + userid);
-
-            map.remove(clientType + ":" + imei);
-
-            ctx.channel().close();
+            SessionSocketHolder.removeSession((NioSocketChannel) ctx.channel());
+        } else if (command == SystemCommand.PING.getCommand()){
+            ctx.channel().attr(AttributeKey.valueOf(Constants.ReadTime)).set(System.currentTimeMillis());
         }
 
 
     }
+
 }

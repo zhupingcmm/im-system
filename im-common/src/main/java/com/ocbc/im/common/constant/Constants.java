@@ -18,6 +18,8 @@ public class Constants {
     /** channel绑定的clientType 和 imel Key*/
     public static final String ClientImei = "clientImei";
 
+    public static final String ReadTime = "readTime";
+
 
     public static class RedisConstants{
 

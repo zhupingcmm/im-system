@@ -8,7 +8,11 @@ public enum SystemCommand implements Command{
     LOGIN(0x2328),
 
     //登出  9003
-    LOGOUT(0x232b);
+    LOGOUT(0x232b),
+
+    //心跳 9999
+    PING(0x270f)
+    ;
 
     private final int command;
 

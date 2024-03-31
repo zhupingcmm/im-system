@@ -32,6 +32,8 @@ public class BootstrapConfig {
          */
         private RedisConfig redis;
 
+        private Long heartBeatTime; //心跳超时时间 单位毫秒
+
     }
 
     @Data
