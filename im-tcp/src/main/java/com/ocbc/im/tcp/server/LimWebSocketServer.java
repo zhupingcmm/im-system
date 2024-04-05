@@ -1,6 +1,10 @@
 package com.ocbc.im.tcp.server;
 
+import com.ocbc.im.cdec.WebSocketMessageDecoder;
+import com.ocbc.im.cdec.WebSocketMessageEncoder;
 import com.ocbc.im.cdec.config.BootstrapConfig;
+import com.ocbc.im.tcp.handler.HeartBeatHandler;
+import com.ocbc.im.tcp.handler.NettyServerHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
@@ -13,6 +17,7 @@ import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
+import io.netty.handler.timeout.IdleStateHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,9 +61,11 @@ public class LimWebSocketServer {
                          */
 
                         pipeline.addLast(new WebSocketServerProtocolHandler("/ws"));
-//                        pipeline.addLast(new WebSocketMessageDecoder());
-//                        pipeline.addLast(new WebSocketMessageEncoder());
-//                        pipeline.addLast(new NettyServerHandler(config.getBrokerId(),config.getLogicUrl()));
+                        pipeline.addLast(new WebSocketMessageDecoder());
+                        pipeline.addLast(new WebSocketMessageEncoder());
+                        pipeline.addLast(new IdleStateHandler(2, 2, 5));
+                        pipeline.addLast(new HeartBeatHandler(config.getHeartBeatTime()));
+                        pipeline.addLast(new NettyServerHandler());
                     }
                 });
 

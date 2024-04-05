@@ -68,6 +68,7 @@ public class SessionSocketHolder {
 
         // todo send message to kafka
 
+        // close connection
         channel.close();
     }
 
@@ -92,6 +93,7 @@ public class SessionSocketHolder {
 
         // todo send message to kafka
 
+        // close connection
         channel.close();
     }
 

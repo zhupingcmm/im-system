@@ -3,6 +3,7 @@ package com.ocbc.im.cdec.utils;
 import com.alibaba.fastjson.JSONObject;
 import com.ocbc.im.cdec.proto.Message;
 import com.ocbc.im.cdec.proto.MessageHeader;
+import com.ocbc.im.common.enums.command.MessageCommand;
 import io.netty.buffer.ByteBuf;
 
 /**
@@ -76,7 +77,7 @@ public class ByteBufToMessageUtils {
 
         message.setMessageHeader(messageHeader);
 
-        if (messageType == 0X0) {
+        if (messageType == MessageCommand.JSON.getCommand()) {
             String body = new String(bodyData);
             JSONObject parse = (JSONObject) JSONObject.parse(body);
             message.setMessagePack(parse);

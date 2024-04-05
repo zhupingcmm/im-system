@@ -21,8 +21,8 @@ public class Starter {
     private static void start() {
         try {
 
-            new LimServer(TcpUtil.getBootstrapConfig().getLim()).start();
-//            new LimWebSocketServer(TcpUtil.getBootstrapConfig().getLim()).start();
+//            new LimServer(TcpUtil.getBootstrapConfig().getLim()).start();
+            new LimWebSocketServer(TcpUtil.getBootstrapConfig().getLim()).start();
             RedisManager.init(TcpUtil.getBootstrapConfig());
         } catch (Exception e) {
             e.printStackTrace();
